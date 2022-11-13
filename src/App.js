@@ -7,7 +7,8 @@ class App extends Component {
     super();
 
     this.state = {
-      monsters: []
+      monsters: [],
+      searchField: ""
     };
     console.log("constructor");
   }
@@ -26,18 +27,33 @@ class App extends Component {
   }
      
 
+  onSearchChange = (event)=> {
+       
+    // Using toLocaleLowerCase to bypass filter's case sensitive nature
+    const searchField = event.target.value.toLocaleLowerCase()
+
+   this.setState(() => {
+    return { searchField }
+   })
+
+  }
 
 
   render() {
     console.log("render");
+
+    // Filter IS case sensitive
+    const filteredMonsters = this.state.monsters.filter((input) => {
+      return input.name.toLocaleLowerCase().includes(this.state.searchField)
+    })
+
+
   return (
     <div className="App">
-      <input className="search-box" type="search" placeholder="search monsters" onChange={(event)=> {
-       // Use the array method .filter to filter out the values...
-       console.log(event.target.value);
-      }} />
+      <input className="search-box" type="search" placeholder="search monsters" onChange={this.onSearchChange} />
+
   {
-    this.state.monsters.map( (monster) => {
+    filteredMonsters.map( (monster) => {
      return (
       <div key={monster.id}>
         <h1 >{monster.name}</h1>
