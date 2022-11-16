@@ -1,69 +1,75 @@
-import { Component } from "react"
+import { Component } from "react";
 
-import './App.css';
+import "./App.css";
 import CardList from "./components/card-list/card-list.component.jsx";
 import SearchBox from "./components/search-box/search-box.component";
 
+// const App = () => {
+//  return (
+//      <div className="App">
+//          <h1 className="app-title">Monsters Rolodex</h1>
+//          <SearchBox
+//              className="monsters-search-box"
+//              onChangeHandler={onSearchChange}
+//              placeholder="search monsters"
+//          />
+
+//          <CardList monsters={filteredMonsters} />
+//      </div>
+//  );
+// }
+
 class App extends Component {
-  constructor() {
-    super();
+	constructor() {
+		super();
 
-    this.state = {
-      monsters: [],
-      searchField: ""
-    };
-    
-  }
+		this.state = {
+			monsters: [],
+			searchField: "",
+		};
+	}
 
-  componentDidMount() {
-    fetch("https://jsonplaceholder.typicode.com/users")
-    .then((response) => response.json())
-     .then((users) => this.setState(() => {
-        return {monsters: users}
-      }
-     ));
-  }
-     
+	componentDidMount() {
+		fetch("https://jsonplaceholder.typicode.com/users")
+			.then((response) => response.json())
+			.then((users) =>
+				this.setState(() => {
+					return { monsters: users };
+				})
+			);
+	}
 
-  onSearchChange = (event)=> {
-    // Using toLocaleLowerCase to bypass filter's case sensitive nature
-    const searchField = event.target.value.toLocaleLowerCase()
+	onSearchChange = (event) => {
+		// Using toLocaleLowerCase to bypass filter's case sensitive nature
+		const searchField = event.target.value.toLocaleLowerCase();
 
-    this.setState(() => {
-      return { searchField }
-    })
+		this.setState(() => {
+			return { searchField };
+		});
+	};
 
-  }
+	render() {
+		const { monsters, searchField } = this.state;
+		const { onSearchChange } = this;
 
+		// Filter IS case sensitive
+		const filteredMonsters = monsters.filter((input) => {
+			return input.name.toLocaleLowerCase().includes(searchField);
+		});
 
-  render() {
-    
+		return (
+			<div className="App">
+				<h1 className="app-title">Monsters Rolodex</h1>
+				<SearchBox
+					className="monsters-search-box"
+					onChangeHandler={onSearchChange}
+					placeholder="search monsters"
+				/>
 
-    const { monsters, searchField } = this.state;
-    const { onSearchChange } = this;
-
-    // Filter IS case sensitive
-    const filteredMonsters = monsters.filter((input) => {
-      return input.name.toLocaleLowerCase().includes(searchField)
-    })
-
-
-  return (
-    <div className="App">
-      
-      
-      <SearchBox 
-        className="monsters-search-box"
-        onChangeHandler={ onSearchChange } 
-        placeholder="search monsters" 
-      />
-
-      <CardList 
-        monsters={ filteredMonsters } 
-      />
-
-    </div>
-  );
-}}
+				<CardList monsters={filteredMonsters} />
+			</div>
+		);
+	}
+}
 
 export default App;
